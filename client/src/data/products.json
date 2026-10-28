@@ -1,0 +1,219 @@
+[
+  {
+    "id": "prod-thrift-01",
+    "_id": "prod-thrift-01",
+    "title": "Data Structures & Algorithms Notes + Textbook",
+    "brand": "Campus Seller Hub",
+    "category": "Textbooks",
+    "subCategory": "Computer Science",
+    "condition": "Good",
+    "listingType": "buy_and_rent",
+    "price": 180,
+    "originalPrice": 250,
+    "discountPercentage": 28,
+    "rentalRate": 15,
+    "rentalPeriod": "per day",
+    "deposit": 60,
+    "rating": 4.9,
+    "reviewCount": 8,
+    "inStock": true,
+    "stockCount": 3,
+    "isPrime": true,
+    "badge": "Top Student Pick",
+    "campus": "North Campus Hub",
+    "pickupLocation": "Central Library Steps",
+    "images": [
+      "https://images.unsplash.com/photo-1532012164546-f432f2e3777f?w=800&q=80"
+    ],
+    "features": [
+      "Complete DSA revision notes with solved semester exam problems.",
+      "Clear handwritten notes + printed standard textbook.",
+      "Instant handover at Central Library steps."
+    ],
+    "specifications": {
+      "Subject": "Data Structures & Algorithms",
+      "Condition": "Good (Light pencil notes)",
+      "Pages": "340 Pages",
+      "Semester": "3rd & 4th Sem CS"
+    }
+  },
+  {
+    "id": "prod-thrift-02",
+    "_id": "prod-thrift-02",
+    "title": "Higher Engineering Mathematics (Semester Reference Book)",
+    "brand": "Campus Seller Hub",
+    "category": "Textbooks",
+    "subCategory": "Engineering Sciences",
+    "condition": "Like New",
+    "listingType": "buy_and_rent",
+    "price": 120,
+    "originalPrice": 180,
+    "discountPercentage": 33,
+    "rentalRate": 10,
+    "rentalPeriod": "per day",
+    "deposit": 50,
+    "rating": 4.8,
+    "reviewCount": 5,
+    "inStock": true,
+    "stockCount": 2,
+    "isPrime": true,
+    "badge": "Bestseller",
+    "campus": "North Campus Hub",
+    "pickupLocation": "Engineering Dept Cafeteria",
+    "images": [
+      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80"
+    ],
+    "features": [
+      "Standard text for Math-I & Math-II.",
+      "Clean margins with intact spine binding.",
+      "Pickup available at Engineering Dept Cafeteria."
+    ],
+    "specifications": {
+      "Subject": "Engineering Mathematics",
+      "Condition": "Like New",
+      "Edition": "8th Edition"
+    }
+  },
+  {
+    "id": "prod-thrift-03",
+    "_id": "prod-thrift-03",
+    "title": "Vintage Oversized Flannel Plaid Shirt (Size M/L)",
+    "brand": "Campus Seller Hub",
+    "category": "Fashion",
+    "subCategory": "Shirts & Tops",
+    "condition": "Good",
+    "listingType": "buy_and_rent",
+    "price": 250,
+    "originalPrice": 380,
+    "discountPercentage": 34,
+    "rentalRate": 20,
+    "rentalPeriod": "per day",
+    "deposit": 80,
+    "rating": 4.7,
+    "reviewCount": 6,
+    "inStock": true,
+    "stockCount": 2,
+    "isPrime": true,
+    "badge": "Sustainable Thrift",
+    "campus": "South Campus Hostel 4",
+    "pickupLocation": "Hostel 4 Common Room",
+    "images": [
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80"
+    ],
+    "features": [
+      "100% brushed soft cotton flannel in forest green plaid.",
+      "Washed, sanitized, and ready for campus mornings.",
+      "Relaxed oversized collegiate fit."
+    ],
+    "specifications": {
+      "Size": "M / L (Oversized)",
+      "Material": "100% Cotton",
+      "Condition": "Good (No tears or stains)"
+    }
+  },
+  {
+    "id": "prod-thrift-04",
+    "_id": "prod-thrift-04",
+    "title": "Campus Graphic Fleece Hoodie (Charcoal, Size L)",
+    "brand": "Campus Seller Hub",
+    "category": "Fashion",
+    "subCategory": "Hoodies & Sweatshirts",
+    "condition": "Like New",
+    "listingType": "buy",
+    "price": 350,
+    "originalPrice": 499,
+    "discountPercentage": 30,
+    "rating": 4.9,
+    "reviewCount": 11,
+    "inStock": true,
+    "stockCount": 2,
+    "isPrime": true,
+    "badge": "Hot Item",
+    "campus": "North Campus Hub",
+    "pickupLocation": "Student Center Hub",
+    "images": [
+      "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80"
+    ],
+    "features": [
+      "Heavyweight thermal fleece inside, ribbed cuffs and waist.",
+      "Minimalist campus graphic print across chest.",
+      "Worn twice, practically brand new condition."
+    ],
+    "specifications": {
+      "Size": "L",
+      "Color": "Charcoal Grey",
+      "Condition": "Like New"
+    }
+  },
+  {
+    "id": "prod-thrift-05",
+    "_id": "prod-thrift-05",
+    "title": "Upcycled Denim Campus Tote Bag with Inner Pocket",
+    "brand": "Campus Seller Hub",
+    "category": "Dorm & Living",
+    "subCategory": "Accessories & Bags",
+    "condition": "Like New",
+    "listingType": "buy",
+    "price": 150,
+    "originalPrice": 220,
+    "discountPercentage": 32,
+    "rating": 5.0,
+    "reviewCount": 9,
+    "inStock": true,
+    "stockCount": 4,
+    "isPrime": true,
+    "badge": "100% Upcycled",
+    "campus": "South Campus Hostel 4",
+    "pickupLocation": "Design Studio Quad",
+    "images": [
+      "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&q=80"
+    ],
+    "features": [
+      "Crafted from reclaimed vintage denim with reinforced handles.",
+      "Spacious enough for a 15-inch laptop, textbooks, and water bottle.",
+      "Dedicated inner zippered pocket for keys and student ID."
+    ],
+    "specifications": {
+      "Material": "Reclaimed Denim Cotton",
+      "Capacity": "18 Liters",
+      "Condition": "Handcrafted / Like New"
+    }
+  },
+  {
+    "id": "prod-thrift-06",
+    "_id": "prod-thrift-06",
+    "title": "Adjustable LED Study Desk Lamp (Warm/White Light)",
+    "brand": "Campus Seller Hub",
+    "category": "Electronics",
+    "subCategory": "Dorm Living",
+    "condition": "Good",
+    "listingType": "buy_and_rent",
+    "price": 299,
+    "originalPrice": 420,
+    "discountPercentage": 29,
+    "rentalRate": 15,
+    "rentalPeriod": "per day",
+    "deposit": 70,
+    "rating": 4.8,
+    "reviewCount": 7,
+    "inStock": true,
+    "stockCount": 3,
+    "isPrime": true,
+    "badge": "Hostel Essential",
+    "campus": "North Campus Hub",
+    "pickupLocation": "Hostel 3 Gate",
+    "images": [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&q=80"
+    ],
+    "features": [
+      "USB-powered flexible gooseneck with 3 touch-sensitive brightness levels.",
+      "Soft warm eye-care illumination ideal for late-night hostel study.",
+      "Compact space-saving weighted base."
+    ],
+    "specifications": {
+      "Power Source": "USB 5V",
+      "Modes": "Warm / Cool White / Natural",
+      "Condition": "Good"
+    }
+  }
+]

@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #F6F5F0;
+  --color-surface: #FFFFFF;
+  --color-border: #E6E4DD;
+  --color-text: #122620;
+  --color-text-secondary: #5C635E;
+  --color-header: #122620;
+  --color-subnav: #1D3B32;
+  --color-terracotta: #E07A5F;
+  --color-botanical: #1D3B32;
+  --color-link: #2A6F4E;
+  --color-amber: #D97706;
+  --color-brick: #B91C1C;
+}
+
+/* Hide visual vertical and horizontal scrollbars across all browsers while keeping smooth scrolling */
+html, body {
+  background-color: #F6F5F0;
+  color: #122620;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Edge */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ThriftSync Amber Focus Ring */
+.thrift-focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #D97706;
+}
+
+/* Reduced-motion accessibility overrides */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

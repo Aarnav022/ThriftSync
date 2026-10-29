@@ -74,6 +74,9 @@ export async function fetchListings(params = {}) {
     const res = await apiClient.get('/listings', { params });
     const rawListings = res?.data?.listings ?? res?.listings ?? res?.data;
     if (Array.isArray(rawListings)) {
+      if (rawListings.length === 0) {
+        return dummyProducts.map(normalizeListing);
+      }
       return rawListings.map(normalizeListing);
     }
   } catch (err) {

@@ -22,9 +22,9 @@
     "badge": "Top Student Pick",
     "campus": "North Campus Hub",
     "pickupLocation": "Central Library Steps",
-    "images": [
-      "https://images.unsplash.com/photo-1532012164546-f432f2e3777f?w=800&q=80"
-    ],
+      "images": [
+  "/dsa-book.jpg"
+],
     "features": [
       "Complete DSA revision notes with solved semester exam problems.",
       "Clear handwritten notes + printed standard textbook.",

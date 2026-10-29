@@ -31,6 +31,10 @@ export function LoginPage({ initialMode = 'user' }) {
     setIsSubmitting(true);
     try {
       const res = await login(email.trim(), password);
+      if (!res?.success) {
+        setError(res?.message || 'Authentication failed. Please check credentials.');
+        return;
+      }
       const loggedInUser = res?.user;
 
       if (isAdminRoute) {
@@ -257,7 +261,11 @@ export function RegisterPage() {
     setError('');
     setIsSubmitting(true);
     try {
-      await register(name.trim(), email.trim(), password, campus);
+      const res = await register(name.trim(), email.trim(), password, campus);
+      if (!res?.success) {
+        setError(res?.message || 'Registration failed. Email may already be in use.');
+        return;
+      }
       navigate('/');
     } catch (err) {
       setError(err?.message || 'Registration failed. Email may already be in use.');

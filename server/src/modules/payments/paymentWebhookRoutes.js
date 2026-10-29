@@ -13,7 +13,36 @@ const router = express.Router();
  */
 router.post('/webhook', async (req, res) => {
   try {
+    // 1. Fail closed if raw body is unavailable (middleware configuration requirement)
+    if (!req.rawBody) {
+      console.error(
+        '[Payment Webhook Error]: Webhook raw body buffer is unavailable. Middleware express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }) must be configured.'
+      );
+      return res.status(500).json({
+        status: 'error',
+        message:
+          'Webhook raw body buffer is unavailable. Middleware express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }) must be configured.',
+      });
+    }
+
+    // 2. Reject missing signature header without mutating state
     const signature = req.headers['x-razorpay-signature'];
+    if (!signature) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Missing Razorpay webhook signature header (x-razorpay-signature)',
+      });
+    }
+
+    // 3. Cryptographically verify signature against exact raw request bytes using dedicated webhook secret
+    const isValid = paymentGateway.verifyWebhookSignature(req.rawBody, signature);
+    if (!isValid) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid Razorpay webhook signature',
+      });
+    }
+
     const event = req.body;
 
     if (!event || !event.event) {

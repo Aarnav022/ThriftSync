@@ -28,7 +28,15 @@ app.use(helmet());
 app.use(cors());
 
 // Input parsing with payload size constraints to protect against body flood attacks
-app.use(express.json({ limit: '1mb' }));
+// Webhook signature verification requires the pristine raw request buffer before parsing
+app.use(
+  express.json({
+    limit: '1mb',
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // Input sanitization against NoSQL query operator injection and XSS

@@ -10,6 +10,7 @@ import Address from '../../src/modules/addresses/addressModel.js';
 import Reservation from '../../src/modules/inventory/reservationModel.js';
 import Payment from '../../src/modules/payments/paymentModel.js';
 import PaymentWebhookEvent from '../../src/modules/payments/paymentWebhookModel.js';
+import paymentGateway from '../../src/modules/payments/paymentGateway.js';
 import IdempotencyRecord from '../../src/modules/idempotency/idempotencyModel.js';
 import StatusHistory from '../../src/modules/orders/statusHistoryModel.js';
 import { signToken } from '../../src/modules/authentication/authService.js';
@@ -441,9 +442,11 @@ describe('ThriftSync Money Path MVP & Backend Architecture Verification', () => 
       vi.spyOn(Order, 'findById').mockResolvedValue(mockOrder);
       vi.spyOn(Reservation, 'find').mockResolvedValue([]);
       vi.spyOn(Payment, 'findOneAndUpdate').mockResolvedValue({});
+      vi.spyOn(paymentGateway, 'verifyWebhookSignature').mockReturnValue(true);
 
       const res = await request(app)
         .post('/api/payments/webhook')
+        .set('x-razorpay-signature', 'valid_test_signature')
         .send({
           event: 'order.paid',
           payload: {

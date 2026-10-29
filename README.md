@@ -54,10 +54,13 @@ cd thriftsync/server
 # Install dependencies (already completed)
 npm install
 
-# Seed database with campus demo data (Users, 16 Listings, Sample Orders, Reviews)
+# Configure environment variables (set ADMIN_PASSWORD, JWT_SECRET, etc.)
+cp .env.example .env
+
+# Seed database with campus store data and administrator account
 npm run seed
 
-# Run Backend Unit Tests (14 test suites, 155 tests)
+# Run Backend Unit Tests (15 test suites)
 npm test
 
 # Start the Express API server (Runs on port 5000)
@@ -82,11 +85,13 @@ npm run dev
 
 ## 🔑 Initial Administrator Account
 
-The database contains **only the System Administrator account** (0 demo student/seller users). Real buyers and sellers register their own accounts live via `/register`:
+The platform administrator account is provisioned dynamically via environment variables configured in `server/.env` (0 demo student/seller users seeded; real buyers and sellers register live via `/register`):
 
-| Role | Email | Password | Details |
+| Role | Email | Password | Provisioning Method |
 | :--- | :--- | :--- | :--- |
-| **System Administrator** | `admin@thriftsync.campus` | `Admin@123` | Campus Administrator (Central Administration) |
+| **System Administrator** | Configured in `ADMIN_EMAIL` (default: `admin@thriftsync.campus`) | Configured in `ADMIN_PASSWORD` (`.env`) | `npm run seed` or `npm run seed:admin` |
+
+> **Security Note:** Default credentials are never stored in source control or published documentation. If an active database or deployment previously used the deprecated published password, administrator credential rotation must be performed separately (e.g., by setting a new `ADMIN_PASSWORD` and `ADMIN_FORCE_PASSWORD_RESET=true` with `npm run seed:admin`).
 
 ---
 

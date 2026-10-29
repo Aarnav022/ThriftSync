@@ -72,8 +72,8 @@ export function normalizeListing(item) {
 export async function fetchListings(params = {}) {
   try {
     const res = await apiClient.get('/listings', { params });
-    const rawListings = res?.data?.listings || res?.listings || res?.data || [];
-    if (Array.isArray(rawListings) && rawListings.length > 0) {
+    const rawListings = res?.data?.listings ?? res?.listings ?? res?.data;
+    if (Array.isArray(rawListings)) {
       return rawListings.map(normalizeListing);
     }
   } catch (err) {

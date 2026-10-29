@@ -30,10 +30,29 @@ const DEFAULT_LOCATION = {
   pickupSpot: 'Central Library Steps',
 };
 
+function isCorruptedOrMockToken(token) {
+  if (!token || typeof token !== 'string') return true;
+  if (token.startsWith('mock_')) return true;
+  // A standard JWT has three base64url segments separated by dots
+  const parts = token.split('.');
+  return parts.length !== 3;
+}
+
+function isCorruptedOrMockUser(user) {
+  if (!user || typeof user !== 'object') return true;
+  if (user.id === 'usr-admin' || user.id === 'usr-student') return true;
+  return false;
+}
+
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => {
     try {
-      return localStorage.getItem(TOKEN_KEY) || null;
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      if (!storedToken || isCorruptedOrMockToken(storedToken)) {
+        localStorage.removeItem(TOKEN_KEY);
+        return null;
+      }
+      return storedToken;
     } catch {
       return null;
     }
@@ -41,8 +60,19 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(() => {
     try {
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      if (!storedToken || isCorruptedOrMockToken(storedToken)) {
+        localStorage.removeItem(USER_KEY);
+        return null;
+      }
       const stored = localStorage.getItem(USER_KEY);
-      return stored ? JSON.parse(stored) : null;
+      if (!stored) return null;
+      const parsed = JSON.parse(stored);
+      if (isCorruptedOrMockUser(parsed)) {
+        localStorage.removeItem(USER_KEY);
+        return null;
+      }
+      return parsed;
     } catch {
       return null;
     }
@@ -57,9 +87,49 @@ export function AuthProvider({ children }) {
     }
   });
 
+  // Verify session on mount if token exists
+  useEffect(() => {
+    let isMounted = true;
+    async function verifySession() {
+      if (!token || isCorruptedOrMockToken(token)) return;
+      try {
+        const res = await apiClient.get('/auth/me');
+        const userData = res?.data?.user || res?.user;
+        if (userData && isMounted) {
+          const enrichedUser = {
+            ...userData,
+            id: userData._id || userData.id,
+            savedAddresses: userData.savedAddresses || DEFAULT_ADDRESSES,
+          };
+          setUser(enrichedUser);
+          try {
+            localStorage.setItem(USER_KEY, JSON.stringify(enrichedUser));
+          } catch {}
+        }
+      } catch (err) {
+        // Clear session if server explicitly rejects token with 401
+        if (err?.statusCode === 401 || err?.status === 401) {
+          if (isMounted) {
+            setUser(null);
+            setToken(null);
+            try {
+              localStorage.removeItem(TOKEN_KEY);
+              localStorage.removeItem(USER_KEY);
+            } catch {}
+          }
+        }
+      }
+    }
+
+    verifySession();
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
+
   useEffect(() => {
     try {
-      if (token) {
+      if (token && !isCorruptedOrMockToken(token)) {
         localStorage.setItem(TOKEN_KEY, token);
       } else {
         localStorage.removeItem(TOKEN_KEY);
@@ -71,7 +141,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     try {
-      if (user) {
+      if (user && token && !isCorruptedOrMockUser(user)) {
         localStorage.setItem(USER_KEY, JSON.stringify(user));
       } else {
         localStorage.removeItem(USER_KEY);
@@ -79,7 +149,7 @@ export function AuthProvider({ children }) {
     } catch (e) {
       console.error('Failed to sync user state:', e);
     }
-  }, [user]);
+  }, [user, token]);
 
   useEffect(() => {
     try {
@@ -95,7 +165,7 @@ export function AuthProvider({ children }) {
       const userData = res?.data?.user || res?.user;
       const authToken = res?.data?.token || res?.token;
 
-      if (userData && authToken) {
+      if (userData && authToken && !isCorruptedOrMockToken(authToken)) {
         const enrichedUser = {
           ...userData,
           id: userData._id || userData.id,
@@ -105,35 +175,43 @@ export function AuthProvider({ children }) {
         setToken(authToken);
         return { success: true, user: enrichedUser };
       }
+      return {
+        success: false,
+        message: res?.message || 'Authentication failed. Please verify credentials.',
+      };
     } catch (err) {
-      console.warn('[AuthContext] Backend login failed, checking demo credentials fallback:', err?.message);
+      console.warn('[AuthContext] Backend login failed:', err?.message);
+      return {
+        success: false,
+        message: err?.message || 'Login failed. Please check your credentials.',
+      };
     }
-
-    // Client-side fallback for offline demonstration
-    const isMockAdmin = email.includes('admin');
-    const mockUser = {
-      id: isMockAdmin ? 'usr-admin' : 'usr-student',
-      name: isMockAdmin ? 'Campus Administrator' : email.split('@')[0],
-      email,
-      role: isMockAdmin ? 'admin' : 'student',
-      campus: isMockAdmin ? 'Central Administration' : 'North Campus Hub',
-      avatar: isMockAdmin 
-        ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80'
-        : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&q=80',
-      savedAddresses: DEFAULT_ADDRESSES,
-    };
-    setUser(mockUser);
-    setToken('mock_jwt_token_' + Date.now());
-    return { success: true, user: mockUser };
   };
 
-  const register = async (name, email, password, campus = 'North Campus Hub') => {
+  const register = async (nameOrData, email, password, campus = 'North Campus Hub') => {
     try {
-      const res = await apiClient.post('/auth/register', { name, email, password, campus });
+      let payload;
+      if (typeof nameOrData === 'object' && nameOrData !== null) {
+        payload = {
+          name: nameOrData.name,
+          email: nameOrData.email,
+          password: nameOrData.password,
+          campus: nameOrData.campus || 'North Campus Hub',
+        };
+      } else {
+        payload = {
+          name: nameOrData,
+          email,
+          password,
+          campus: campus || 'North Campus Hub',
+        };
+      }
+
+      const res = await apiClient.post('/auth/register', payload);
       const userData = res?.data?.user || res?.user;
       const authToken = res?.data?.token || res?.token;
 
-      if (userData && authToken) {
+      if (userData && authToken && !isCorruptedOrMockToken(authToken)) {
         const enrichedUser = {
           ...userData,
           id: userData._id || userData.id,
@@ -144,23 +222,18 @@ export function AuthProvider({ children }) {
         setToken(authToken);
         return { success: true, user: enrichedUser };
       }
+      return {
+        success: false,
+        message: res?.message || 'Registration failed. Please check details.',
+      };
     } catch (err) {
-      console.warn('[AuthContext] Backend registration fallback:', err?.message);
+      console.warn('[AuthContext] Backend registration failed:', err?.message);
+      return {
+        success: false,
+        message: err?.message || 'Registration failed. Email may already be in use.',
+        errors: err?.errors || null,
+      };
     }
-
-    const newUser = {
-      id: 'usr-' + Date.now().toString(36),
-      name,
-      email,
-      role: 'student',
-      campus,
-      phone: '',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&q=80',
-      savedAddresses: DEFAULT_ADDRESSES,
-    };
-    setUser(newUser);
-    setToken('mock_jwt_token_' + Date.now());
-    return { success: true, user: newUser };
   };
 
   const updateUserProfile = async (profileData) => {
@@ -213,8 +286,8 @@ export function AuthProvider({ children }) {
     }));
   };
 
-  const isAuthenticated = Boolean(user && token);
-  const isAdmin = user?.role === 'admin';
+  const isAuthenticated = Boolean(user && token && !isCorruptedOrMockToken(token));
+  const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
   const isSeller = true; // All authenticated users have access to seller studio and listing capabilities
 
   const value = {

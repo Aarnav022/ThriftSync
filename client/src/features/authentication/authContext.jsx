@@ -4,18 +4,34 @@ import apiClient from '../../services/apiClient.js';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
+  const [token, setToken] = useState(() => {
     try {
-      const stored = localStorage.getItem('thriftsync_user');
-      return stored ? JSON.parse(stored) : null;
+      const stored = localStorage.getItem('thriftsync_token');
+      if (stored && (stored.startsWith('mock_') || stored.split('.').length !== 3)) {
+        localStorage.removeItem('thriftsync_token');
+        return null;
+      }
+      return stored || null;
     } catch {
       return null;
     }
   });
 
-  const [token, setToken] = useState(() => {
+  const [user, setUser] = useState(() => {
     try {
-      return localStorage.getItem('thriftsync_token') || null;
+      const storedToken = localStorage.getItem('thriftsync_token');
+      if (!storedToken || storedToken.startsWith('mock_') || storedToken.split('.').length !== 3) {
+        localStorage.removeItem('thriftsync_user');
+        return null;
+      }
+      const stored = localStorage.getItem('thriftsync_user');
+      if (!stored) return null;
+      const parsed = JSON.parse(stored);
+      if (parsed?.id === 'usr-admin' || parsed?.id === 'usr-student') {
+        localStorage.removeItem('thriftsync_user');
+        return null;
+      }
+      return parsed;
     } catch {
       return null;
     }

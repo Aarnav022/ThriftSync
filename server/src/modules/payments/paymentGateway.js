@@ -81,18 +81,29 @@ class RazorpayGatewayAdapter {
   }
 
   /**
-   * Verifies Razorpay Webhook signature against raw request body
+   * Verifies Razorpay Webhook signature against raw request body using dedicated webhook secret
    */
-  verifyWebhookSignature(rawBody, signature) {
-    const secret = this.webhookSecret || this.keySecret;
-    if (!secret) return false;
+  verifyWebhookSignature(rawBody, signature, customSecret = null) {
+    const secret = customSecret || process.env.RAZORPAY_WEBHOOK_SECRET || this.webhookSecret;
+    if (!secret || !signature || !rawBody) return false;
 
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(rawBody)
-      .digest('hex');
+    try {
+      const bodyBuffer = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody, 'utf8');
+      const expectedSignature = crypto
+        .createHmac('sha256', secret)
+        .update(bodyBuffer)
+        .digest('hex');
 
-    return expectedSignature === signature;
+      const expectedBuf = Buffer.from(expectedSignature, 'utf8');
+      const signatureBuf = Buffer.from(signature, 'utf8');
+
+      if (expectedBuf.length !== signatureBuf.length) {
+        return false;
+      }
+      return crypto.timingSafeEqual(expectedBuf, signatureBuf);
+    } catch {
+      return false;
+    }
   }
 
   /**

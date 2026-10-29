@@ -29,29 +29,43 @@ export async function runSeed() {
     ]);
 
     // 1. Robustly provision the master system admin account (Zero demo students or sellers)
-    const salt = await bcrypt.genSalt(10);
-    const adminHashedPassword = await bcrypt.hash('Admin@123', salt);
+    const adminEmail = (process.env.ADMIN_EMAIL || 'admin@thriftsync.campus').toLowerCase().trim();
+    const adminPassword = process.env.ADMIN_PASSWORD;
 
-    let adminUser = await User.findOne({ email: 'admin@thriftsync.campus' });
+    if (!adminPassword) {
+      console.error('[Seed] Error: ADMIN_PASSWORD environment variable is required to provision the administrator.');
+      process.exitCode = 1;
+      return;
+    }
+    if (adminPassword.length < 8) {
+      console.error('[Seed] Error: ADMIN_PASSWORD must be at least 8 characters long.');
+      process.exitCode = 1;
+      return;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const adminHashedPassword = await bcrypt.hash(adminPassword, salt);
+
+    let adminUser = await User.findOne({ email: adminEmail });
     if (!adminUser) {
       adminUser = await User.create({
-        name: 'Campus Administrator',
-        email: 'admin@thriftsync.campus',
+        name: process.env.ADMIN_NAME || 'Campus Administrator',
+        email: adminEmail,
         password: adminHashedPassword,
         role: 'admin',
-        campus: 'Central Administration',
+        campus: process.env.ADMIN_CAMPUS || 'Central Administration',
         isActive: true,
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80',
       });
-      console.log('[Seed] Provisioned Master System Administrator: admin@thriftsync.campus / Admin@123 (role: admin)');
+      console.log(`[Seed] Provisioned Master System Administrator: ${adminEmail} (role: admin)`);
     } else {
       adminUser.role = 'admin';
       adminUser.password = adminHashedPassword;
       adminUser.isActive = true;
-      adminUser.name = 'Campus Administrator';
-      adminUser.campus = 'Central Administration';
+      adminUser.name = process.env.ADMIN_NAME || adminUser.name || 'Campus Administrator';
+      adminUser.campus = process.env.ADMIN_CAMPUS || adminUser.campus || 'Central Administration';
       await adminUser.save();
-      console.log('[Seed] Master System Administrator verified & updated: admin@thriftsync.campus / Admin@123 (role: admin)');
+      console.log(`[Seed] Master System Administrator verified & updated: ${adminEmail} (role: admin)`);
     }
 
     console.log('[Seed] Master Admin Account ready. Zero demo students or sellers seeded.');

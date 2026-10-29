@@ -364,10 +364,9 @@ export function AdminPage() {
     }
   }, [isAdmin]);
 
-  // Quick fallback login for development
-  const handleAdminQuickSwitch = async () => {
-    await login('admin@thriftsync.campus', 'Admin@123');
-    loadAllAdminData();
+  // Admin sign in navigation
+  const handleAdminQuickSwitch = () => {
+    navigate('/admin/login');
   };
 
   // Moderate Listing Action (Approve / Reject)

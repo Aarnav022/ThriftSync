@@ -1,0 +1,5 @@
+[build]
+  # Netlify installs dependencies only at the repository root, so the client's
+  # own dependencies (including Vite) must be installed before building.
+  command = "npm ci --prefix client && npm run build --prefix client"
+  publish = "client/dist"
